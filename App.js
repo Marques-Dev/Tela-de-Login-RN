@@ -1,7 +1,30 @@
-import React from 'react';
-import { View, KeyboardAvoidingView, Image, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { Animated, View, KeyboardAvoidingView, Image, StyleSheet, TextInput, TouchableOpacity, Text } from 'react-native';
 
 export default function App() {
+
+
+    const [offset] = useState(new Animated.ValueXY({x:0, y:95}));
+
+    const [opacity] = useState(new Animated.Value(0)); 
+
+
+
+    useEffect(()=> {
+      Animated.parallel([
+        Animated.spring(offset.y, {
+          toValue: 0,
+          speed: 4,
+          baunciness: 20
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 200,
+        })
+      ]).start();
+    
+    }, []); 
+
   return (
     <KeyboardAvoidingView style={styles.background}>
       <View style={styles.containerLogo}>
@@ -11,7 +34,19 @@ export default function App() {
       </View>
 
 
-      <View style={styles.container}>
+      <Animated.View 
+        style={[
+          styles.container,
+          {
+            opacity: opacity,
+            transform: [
+              { traslateY: offset.y }
+            ]
+          }
+          ]}
+        >
+
+
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -31,10 +66,10 @@ export default function App() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.btnRegister}>
-          <Text style={styles.registerText}>Criar conta</Text>
+          <Text style={styles.registerText}>Criar conta gratuita</Text>
         </TouchableOpacity>
         
-      </View> 
+      </Animated.View> 
     </KeyboardAvoidingView>
   );
 }
@@ -46,7 +81,7 @@ const styles = StyleSheet.create({
     flex:1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#191919'
+    backgroundColor: '#000'
   },
   containerLogo:{
     flex:1,
@@ -57,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '90%',
+    paddingBottom: 50
   },
   input:{
     backgroundColor: '#FFF',
@@ -80,17 +116,13 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   btnRegister:{
-    marginTop: 10,
-    backgroundColor: '#35AAFF',
-    width: '90%',
-    height: 45,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 7,
+    marginTop: 27,
+    
   },
   registerText:{
+    alignItems: 'center',
     color: '#FFF',
-    fontSize: 16
+    fontSize: 15
   }
 
 
